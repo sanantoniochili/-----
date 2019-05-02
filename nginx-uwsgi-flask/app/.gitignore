@@ -1,0 +1,5 @@
+# python execs
+*.pyc
+
+# temp files
+*.out
