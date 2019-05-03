@@ -1,25 +1,29 @@
-FROM python:3.5
+FROM nginx:latest
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-        libatlas-base-dev gfortran nginx supervisor
+RUN apt-get install -y python3 python3-pip supervisor
 
+RUN pip3 install --upgrade setuptools
 RUN pip3 install uwsgi
 
-RUN pip3 install -r /project/requirements.txt
+# install requirements
+RUN pip3 install kubernetes
+RUN pip3 install numpy
+RUN pip3 install flask
+RUN pip3 install cwl-runner
+RUN pip3 install PyYAML
+RUN pip3 install Django
 
-RUN useradd --no-create-home nginx
+# Set up servers
+RUN mkdir /etc/uwsgi/
 
-RUN rm /etc/nginx/sites-enabled/default
-RUN rm -r /root/.cache
-
-COPY nginx.conf /etc/nginx/
-COPY flask-site-nginx.conf /etc/nginx/conf.d/
+COPY flask-nginx.conf /etc/nginx/conf.d/
 COPY uwsgi.ini /etc/uwsgi/
-COPY supervisord.conf /etc/
+COPY supervisord.conf /etc/supervisor/
 
-COPY /app /project
+# Copy the application
+COPY /app /app
 
-WORKDIR /project
+WORKDIR /app
 
 CMD ["/usr/bin/supervisord"]

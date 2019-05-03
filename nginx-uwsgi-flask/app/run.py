@@ -76,3 +76,9 @@ def run_specfem():
     # Spawn specfem mpi cluster
     butils.create_specfem(data, name_space, _specfem)
     return ('OK!', 200)
+
+#############test
+
+@app.route('/hello', methods=['GET'])
+def test():
+    return ('OK!', 200)
