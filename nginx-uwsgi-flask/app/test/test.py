@@ -16,7 +16,7 @@ d4p_service_port = os.environ['D4P_REGISTRY_SERVICE_PORT']
 url = 'http://' + d4p_service_host + ':' + d4p_service_port
 
 # Configuration of dare api
-dare_api_host = os.environ['NGINX-API-IP']
+dare_api_host = os.environ['NGINX_API_IP']
 dare_api_port = '80'
 
 _url = 'http://' + dare_api_host + ':' + dare_api_port
@@ -167,6 +167,7 @@ def submit_specfem(n_nodes, data_url):
 # DARE api test
 
 def dare_api_test():
+    print(requests.get(url + '/hello')
     if sys.argv[3] == 'd4p':
         print('Creating Workspace: TEST ......')
         # API "workflow" preprocess

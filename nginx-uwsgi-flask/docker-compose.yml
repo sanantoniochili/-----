@@ -1,0 +1,46 @@
+version: "2"
+
+services:
+  mysqldb:
+      image: mysql:8.0
+      container_name: dj-reg-db
+      environment:
+          - MYSQL_DATABASE=dj_vercereg
+          - MYSQL_USER=root
+          - MYSQL_ROOT_PASSWORD=root
+      ports:
+          - "3306:3306"
+      networks:
+      - registrynet
+      logging:
+          driver: none
+
+  dj-reg:
+      image: registry.gitlab.com/project-dare/d4py-registry:rename
+      container_name: dj-reg
+      volumes:
+      - ${PWD}/.env:/registry/dj_darereg/dj_darereg/.env
+      ports:
+          - "8000:8000"
+      networks:
+      - registrynet
+      depends_on: 
+      - mysqldb
+
+  api:
+    image: api-nginx-flask:latest
+    container_name: nginx-api
+    environment:
+          - D4P_REGISTRY_SERVICE_HOST=dj-reg
+          - D4P_REGISTRY_SERVICE_PORT=8000
+          - NGINX_API_IP=localhost
+    ports:
+      - "80:80"
+    networks:
+     - registrynet
+      
+
+networks:
+  registrynet:
+      driver: bridge
+

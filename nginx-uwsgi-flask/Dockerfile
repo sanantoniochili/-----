@@ -8,8 +8,8 @@ RUN pip3 install uwsgi
 
 # install requirements
 RUN pip3 install kubernetes
-RUN pip3 install numpy
-RUN pip3 install flask
+RUN pip3 install numpy 
+RUN pip3 install flask 
 RUN pip3 install cwl-runner
 RUN pip3 install PyYAML
 RUN pip3 install Django
