@@ -17,9 +17,10 @@ RUN pip3 install Django
 # Set up servers
 RUN mkdir /etc/uwsgi/
 
-COPY flask-nginx.conf /etc/nginx/conf.d/
-COPY uwsgi.ini /etc/uwsgi/
-COPY supervisord.conf /etc/supervisor/
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY conf/flask-nginx.conf /etc/nginx/conf.d/
+COPY conf/uwsgi.ini /etc/uwsgi/
+COPY conf/supervisord.conf /etc/supervisor/
 
 # Copy the application
 COPY /app /app

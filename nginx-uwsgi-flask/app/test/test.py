@@ -167,7 +167,6 @@ def submit_specfem(n_nodes, data_url):
 # DARE api test
 
 def dare_api_test():
-    print(requests.get(url + '/hello')
     if sys.argv[3] == 'd4p':
         print('Creating Workspace: TEST ......')
         # API "workflow" preprocess

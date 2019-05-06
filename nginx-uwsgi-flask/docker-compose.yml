@@ -28,7 +28,7 @@ services:
       - mysqldb
 
   api:
-    image: api-nginx-flask:latest
+    image: registry.gitlab.com/sanantoniochili/nginx-api
     container_name: nginx-api
     environment:
           - D4P_REGISTRY_SERVICE_HOST=dj-reg
