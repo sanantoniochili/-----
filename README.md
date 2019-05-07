@@ -4,7 +4,7 @@ This project's purpose is to form the environment of the application contained i
 
 ## Folders
 
-* config folder
+* conf folder
     * nginx 
     * uwsgi 
     * supervisord 
