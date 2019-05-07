@@ -5,7 +5,7 @@ Docker-compose yaml provided for testing with already uploaded images.
 
 ## Folders
 
-* conf
+* conf [configuration files]
     * nginx 
     * uwsgi 
     * supervisord 
