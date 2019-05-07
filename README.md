@@ -10,7 +10,7 @@ Docker-compose yaml provided for testing with already uploaded images.
     * uwsgi 
     * supervisord 
     
-* app
+* app [with flask]
     * run.py
     * etc
 
