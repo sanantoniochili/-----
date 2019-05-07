@@ -57,7 +57,7 @@ def mpi_spec():
 @app.route('/run-d4p', methods=['POST'])
 def run_d4p():
     # Load request data
-    data = json.loads(request.data)
+    data = json.loads(request.data.decode('utf-8'))
     # Check availability of PE impl
     try:
         code = butils.findPEimpl(data)
@@ -72,13 +72,7 @@ def run_d4p():
 @app.route('/run-specfem', methods=['POST'])
 def run_specfem():
     # Load request data
-    data = json.loads(request.data)
+    data = json.loads(request.data.decode('utf-8'))
     # Spawn specfem mpi cluster
     butils.create_specfem(data, name_space, _specfem)
-    return ('OK!', 200)
-
-#############test
-
-@app.route('/hello', methods=['GET'])
-def test():
     return ('OK!', 200)
