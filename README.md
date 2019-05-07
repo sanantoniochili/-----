@@ -14,7 +14,7 @@ Docker-compose yaml provided for testing with already uploaded images.
     * run.py
     * etc
 
-### App
+## App
 
 The particular folder contains an application developed for the needs of DARE api (https://gitlab.com/project-dare/dare-api).
 
