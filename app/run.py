@@ -16,25 +16,25 @@ from flask import render_template, redirect, url_for
 app = Flask(__name__)
 
 # Get namespace from yaml
-# r = requests.get('https://gitlab.com/project-dare/dare-api/raw/master/k8s/nginx-api-dp.yaml')
-# name_space = yaml.safe_load(r.text)['metadata']['namespace']
-# # Current pod running flask api
-# host_pod = butils.init_from_yaml(name_space)
+r = requests.get('https://gitlab.com/project-dare/dare-api/raw/master/k8s/nginx-api-dp.yaml')
+name_space = yaml.safe_load(r.text)['metadata']['namespace']
+# Current pod running flask api
+host_pod = butils.init_from_yaml(name_space)
 
-# # D4P OPENMPI
-# _d4p = {}
-# _d4p['jobname'] = 'd4p-openmpi'
-# _d4p['mountname'] = host_pod.spec.containers[0].volume_mounts[0].name
-# _d4p['mountpath'] = host_pod.spec.containers[0].volume_mounts[0].mount_path
-# _d4p['volname'] = host_pod.spec.volumes[0].name
-# _d4p['fsname'] = host_pod.spec.volumes[0].flex_volume.options['fsName']
-# _code = _d4p['mountpath'] + host_pod.spec.volumes[0].flex_volume.options['path'].split('/')[1] + '/code.py'
-# # SPECFEM
-# _specfem = {}
-# _specfem['specname'] = 'd4p-specfem'
-# _specfem['specvolname'] = host_pod.spec.containers[0].volume_mounts[1].name
-# _specfem['spec_mountpath'] = host_pod.spec.containers[0].volume_mounts[1].mount_path
-# _specfem['fsname'] = host_pod.spec.volumes[0].flex_volume.options['fsName']
+# D4P OPENMPI
+_d4p = {}
+_d4p['jobname'] = 'd4p-openmpi'
+_d4p['mountname'] = host_pod.spec.containers[0].volume_mounts[0].name
+_d4p['mountpath'] = host_pod.spec.containers[0].volume_mounts[0].mount_path
+_d4p['volname'] = host_pod.spec.volumes[0].name
+_d4p['fsname'] = host_pod.spec.volumes[0].flex_volume.options['fsName']
+_code = _d4p['mountpath'] + host_pod.spec.volumes[0].flex_volume.options['path'].split('/')[1] + '/code.py'
+# SPECFEM
+_specfem = {}
+_specfem['specname'] = 'd4p-specfem'
+_specfem['specvolname'] = host_pod.spec.containers[0].volume_mounts[1].name
+_specfem['spec_mountpath'] = host_pod.spec.containers[0].volume_mounts[1].mount_path
+_specfem['fsname'] = host_pod.spec.volumes[0].flex_volume.options['fsName']
 
 # Returns PE Impl code and mpi cwl specification
 
