@@ -28,7 +28,7 @@ services:
       - mysqldb
 
   api:
-    image: registry.gitlab.com/sanantoniochili/nginx-api
+    image: registry.gitlab.com/sanantoniochili/nginx-api:get_pe_impl
     container_name: nginx-api
     environment:
           - D4P_REGISTRY_SERVICE_HOST=dj-reg

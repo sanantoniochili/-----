@@ -1,0 +1,22 @@
+Creating Workspaces 1 & 2......
+Added workspace: 1
+Added workspace: 2
+Added Processing Element: TEST1
+Added Processing Element Implementation: TEST1
+Added Processing Element Implementation: TEST1
+Added Processing Element: TEST2
+Added Processing Element Implementation: TEST2
+Added Processing Element Implementation: TEST1
+Added Processing Element Implementation: TEST2
+-----------original
+PE1impl3
+PE1impl1
+PE2impl2
+PE2impl1
+PE1impl2
+-----------new
+PE1impl3
+PE1impl1
+PE2impl2
+PE2impl1
+PE1impl2

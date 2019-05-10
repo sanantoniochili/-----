@@ -35,7 +35,7 @@ def get_PE(id,wid,pckg,name,client):
 	return code
 	
 
-def get_pe_impl(id=1,wid,pckg,name,client):
+def get_pe_impl(id,wid,pckg,name,client):
 	# get PE signature by <name>
 	# getting implementation code from PE submission, has to be rethought
 	pe = client.manager.get_pe_spec(wid, pckg, name)
