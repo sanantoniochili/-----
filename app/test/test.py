@@ -46,7 +46,8 @@ def get_workspace(name):
                        headers=client.manager._get_auth_header())
     resp_json = json.loads(req.text)
     # Iterate and retrieve
-    return [i['url'] for i in resp_json if i['name'] == name][0]
+    return ([i['url'] for i in resp_json if i['name'] == name][0], 
+            [i['id'] for i in resp_json if i['name'] == name][0]) 
 
 # Create workspace using d4p service api
 
@@ -116,6 +117,7 @@ def create_peimpl(desc, code, parent_sig, pckg, name, workspace, clone):
     # Progress check
     if _r.status_code == 201:
         print('Added Processing Element Implementation: ' + name)
+        return json.loads(_r.text)['id']
     else:
         print ('Add Processing Element Implementation resource returns \
                 status_code: ' + str(_r.status_code))
@@ -170,21 +172,22 @@ def dare_api_test():
     if sys.argv[3] == 'd4p':
         print('Creating Workspace: TEST ......')
         # API "workflow" preprocess
-        workspace_url=create_workspace("", "TEST", "")
+        workspace_url, workspace_id=create_workspace("", "TEST", "")
+        workspace_id = int(workspace_id)
         print('Creating PE:TEST in Workspace: TEST ......')
         pe_url=create_pe(desc="", name="TEST", conn=[], pckg="TEST",
                     workspace=workspace_url, clone="", peimpls=[])
         print('Creating PE Impl '+str(pe_url)+' of PE: TEST......')
-        create_peimpl(desc="", code=open('mySplitMerge.py').read(),
+        impl_id=create_peimpl(desc="", code=open('mySplitMerge.py').read(),
                                       parent_sig=pe_url, pckg="TEST",
                                       name="TEST", workspace=workspace_url,
                                       clone="")
         print('Submit Dispel4py run with non existent PE Impl. .....')
-        submit_d4p(impl_id=32, pckg="asdasda", workspace_id=46,
+        submit_d4p(impl_id=9999, pckg="asdasda", workspace_id=9999,
                 pe_name="kdasudkasl", n_nodes=6)
         print('Submit correct Dispel4py run of PE TEST .....')
         # DARE API demo
-        submit_d4p(impl_id=1, pckg="TEST", workspace_id=1, pe_name="TEST",
+        submit_d4p(impl_id=impl_id, pckg="TEST", workspace_id=workspace_id, pe_name="TEST",
                                 n_nodes=6, no_processes=6, iterations=1)
     else:
         submit_specfem(n_nodes=24,

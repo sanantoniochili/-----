@@ -1,15 +1,12 @@
-'''
-This is a dispel4py graph which produces a workflow that splits the data, 
-sends it to different nodes
-and merges the output of those with another node. 
-'''
 import math
 import os
+
 
 from dispel4py.examples.graph_testing import testing_PEs as t
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.core import GenericPE, NAME, TYPE, GROUPING
 from dispel4py.base import SimpleFunctionPE, IterativePE, BasePE
+from dispel4py.provenance import *
 
 
 def read_in(filename):
@@ -22,6 +19,11 @@ def read_in(filename):
         f.close()
     return nos
 
+
+class DataInGranuleType(ProvenanceType):
+
+    def extractItemMetadata(self, data, port):
+        return [{port:str(data)}]
 
 class splitPE(GenericPE):
     '''
@@ -46,7 +48,8 @@ class splitPE(GenericPE):
                 NAME: 'output%s' % i, TYPE: ['number']}
         self.outputnames = list(self.outputconnections.keys())
 
-    def process(self, inputs):
+    def _process(self, inputs):
+
         # split into sublists of about same length
         n = math.ceil(len(self.nos) / self.num_outputs)
         n = int(n)
@@ -72,7 +75,7 @@ def mult(input):
 class mergePE(GenericPE):
     '''
     PE to merge input lists from different nodes
-    into one bigger list 
+    into one bigger list
     '''
     result = []
     counter = 0
@@ -87,14 +90,18 @@ class mergePE(GenericPE):
                 NAME: 'input%s' % i, TYPE: ['number']}
         self.outputconnections = {'output': {NAME: 'output', TYPE: ['result']}}
 
-    def process(self, inputs):
+    def _process(self, inputs):
         # combine different input lists into one
         for inp in self.inputconnections:
             if inp in inputs:
                 self.result += inputs[inp]
                 self.counter += 1
+
         if self.counter == self.num_inputs:
-            return {'output': self.result}
+            self.counter=0
+            out=self.result.copy()
+            self.result=[]
+            return {'output': out}
 
 
 class fwritePE(GenericPE):
@@ -102,18 +109,22 @@ class fwritePE(GenericPE):
     Write input to file
     '''
     INPUT_NAME = 'input'
+    OUTPUT_NAME = 'output'
 
     def __init__(self):
         GenericPE.__init__(self)
         self._add_input(fwritePE.INPUT_NAME)
+        self._add_output(fwritePE.OUTPUT_NAME)
 
-    def process(self, inputs):
+    def _process(self, inputs):
         # write result input to file 'output.txt'
         data = inputs[fwritePE.INPUT_NAME]
+
         with open('output.txt','w') as f:
             for item in data:
                 f.write("%s " % item)
             f.close()
+        self.write("output",data,location="output.txt",metadata={'results':data})
 
 
 def testSplitMerge():
@@ -141,3 +152,46 @@ def testSplitMerge():
 
 ''' important: this is the graph_variable '''
 graph = testSplitMerge()
+
+
+
+#provenance configuration:
+prov_config =  {
+                'provone:User': "aspinuso",
+                's-prov:description' : "API demo",
+                's-prov:workflowName': "splitMerge",
+                's-prov:workflowType': "dare:Thing",
+                's-prov:workflowId'  : "splitmerge",
+                's-prov:save-mode'   : 'service',
+                's-prov:WFExecutionInputs':  [],
+                # defines the Provenance Types and Provenance Clusters for the Workflow Components
+                's-prov:componentsType' :
+                                   {'mergePE': {'s-prov:type':(AccumulateFlow,DataInGranuleType,)},
+                #                                 's-prov:prov-cluster':'seis:Processor'},
+                                    'splitPE': {'s-prov:type':(DataInGranuleType,)}},
+                #                                 's-prov:prov-cluster':'seis:Processor'},
+                #                    'StoreStream':    {'s-prov:prov-cluster':'seis:DataHandler',
+                #                                       's-prov:type':(SeismoPE,)},
+                's-prov:sel-rules': None
+                }
+
+#rid='DARE_SPLITMERGE_'+getUniqueId()
+
+#provenance storage endpoint:
+ProvenanceType.REPOS_URL='http://'+os.getenv('SPROV_SERVICE_HOST')+':'+os.getenv('SPROV_SERVICE_PORT')+'/workflowexecutions/insert'
+ProvenanceType.BULK_SIZE=5
+
+# Finally, provenance enhanced graph is prepared:
+configure_prov_run(graph,
+                    provImpClass=(ProvenanceType,),
+                    input=prov_config['s-prov:WFExecutionInputs'],
+                    username=prov_config['provone:User'],
+                    runId=os.getenv('RUN_ID'),
+                    description=prov_config['s-prov:description'],
+                    workflowName=prov_config['s-prov:workflowName'],
+                    workflowType=prov_config['s-prov:workflowType'],
+                    workflowId=prov_config['s-prov:workflowId'],
+                    save_mode=prov_config['s-prov:save-mode'],
+                    componentsType=prov_config['s-prov:componentsType'],
+                    sel_rules=prov_config['s-prov:sel-rules']
+                    )
