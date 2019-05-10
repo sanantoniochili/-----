@@ -5,12 +5,17 @@ Docker-compose yaml provided for testing with already uploaded images.
 
 ## Folders
 
-* conf
-    * nginx 
-    * uwsgi 
-    * supervisord 
+* *conf* [configuration files]
+    * **nginx** <br>
+        nginx.conf, flask-nginx.conf 
+
+    * **uwsgi** <br> 
+        uwsgi.ini
+
+    * **supervisord** <br> 
+        supervisord.conf
     
-* app
+* *app* [with flask]
     * run.py
     * etc
 
